@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Catalog</title>
+    <style>
+        img { max-width: 150px;
+        height: 100px;
+        width: 100px;
+        }
+        .product { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; }
+        .s {
+          
+           text-align: center;
+           
+        }
+        .s p{
+            width: 100%;
+            height: 25px;
+            background:burlywood;
+            border-radius: 5px;
+            padding: 3px;
+        }
+        .v h1{
+
+            text-align: center;
+        }
+        .v {
+            
+            width: 100%;
+            height: 100px;
+            background: yellow;
+            border-radius: 20px;
+            padding: 10px;
+        }
+        @media print{
+            .no-print{
+                display:none;
+            }
+        }
+    </style>
+</head>
+<body bgcolor="skyblue"><br/>
+   <div class="v">
+    <h1>Mother Therasa Institute Of Computer Applications,Palamaner-517048</h1>
+  
+</div>
+    {% for product in products %}
+        <div class="product">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+            <h2><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></h2>
+            <p>Rs{{ product.price }}</p>
+        </div>
+    {% endfor %}
+    <div class="s"><p>Author:A.K.POWER STAR</p></div>
+    <button onclick="window.print()" class="no-print">print this page</button>
+</body>
+</html>

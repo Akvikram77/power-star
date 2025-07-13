@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{prodcut.name }}</title>
+</head>
+<body>
+    <h1>{{prodcut.name }}</h1>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+    <p>{{ product.description }}</p>
+    <p>Price: Rs{{ product.price }}</p>
+    <a href="/">Back to Products</a>
+    <button onclick="window.print()">print this page</button>
+</body>
+</html>
