@@ -1,7 +1,11 @@
 from django.urls import path
 from . import views
+
 urlpatterns = [
-   path('insert_employee/',views.insert_employee, name='insert_employee'),
-   path('view_employee/', views.view_employee,  name = 'view_employee'),
-# other paths as needed
+    path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
 ]
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('generate_pdf/', views.generate_pdf, name='generate_pdf'),
+]
+

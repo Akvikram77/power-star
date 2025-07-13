@@ -1,29 +1,23 @@
 from django.shortcuts import render
-from django.views.generic.edit import CreateView
-from django.views.generic import ListView
-from django.views.generic.edit import UpdateView
-from django.views.generic.edit import DeleteView
-from django.urls import reverse_lazy
-from .models import Book
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
-class BookCreateView(CreateView):
-    model = Book
-    fields = ['title', 'author', 'publication_date']
-    template_name = 'book_form.html'  # Optional: specify custom template
-    success_url = reverse_lazy('book_list')  # URL to redirect to after successful form submission
+def home(request):
+    return render(request, 'home.html')
 
-class BookListView(ListView):
-    model = Book
-    context_object_name = 'books'  # Optional: specify the context variable name in templates
-    template_name = 'book_list.html'  # Optional: specify custom template
+def generate_pdf(request):
+    template_path = 'pdf_template.html'
+    context = {'name': 'User', 'message': 'Hello! This is your PDF.'}
 
-class BookUpdateView(UpdateView):
-    model = Book
-    fields = ['title', 'author', 'publication_date']
-    template_name = 'book_form.html'  # Optional: specify custom template
-    success_url = reverse_lazy('book_list')  # URL to redirect to after successful form submission
+    template = get_template(template_path)
+    html = template.render(context)
 
-class BookDeleteView(DeleteView):
-    model = Book
-    template_name = 'book_confirm_delete.html'  # Optional: specify custom template
-    success_url = reverse_lazy('book_list')  # URL to redirect to after successful deletion
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="document.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF')
+    return response

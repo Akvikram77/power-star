@@ -1,22 +1,30 @@
-from django.shortcuts import render
-from django.http import HttpResponse 
-from .models import EmployeeModel  
-from .forms import EmployeeForm
-from django.template import loader
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
-def insert_employee(request):
-    context ={}# dictionary for initial data with field names as keys
-    ob_form = EmployeeForm(request.POST or None)
-    if ob_form.is_valid():
-        ob_form.save()
-        return HttpResponse("Data Saved")
-    context['form']= ob_form
-    return render(request, "insert_employee.html", context)  
+def generate_pdf(request):
+    # Some sample data to show in PDF
+    context = {
+        'title': 'Test PDF',
+        'message': 'Hello! This PDF was generated from Django.'
+    }
 
-def view_employee(request):
-    ob=EmployeeModel.objects.all().values()
-    context={
-        'data':ob
-        }
-    temp=loader.get_template('view_employee.html')
-    return HttpResponse(temp.render(context,request))
+    # Load template and render it with context
+    template = get_template('pdf_template.html')
+    html = template.render(context)
+
+    # Create response as PDF
+    response = HttpResponse(content_type='pdf')
+    response['Content-Disposition'] = 'inline; filename="test.pdf"'
+
+    # Generate PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('We had some errors while generating PDF')
+    return response
+    from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')
+
